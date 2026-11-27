@@ -1,0 +1,54 @@
+[[permission]]
+identifier = "allow-new-game"
+description = "Start a game in the Rust engine."
+commands.allow = ["new_game"]
+
+[[permission]]
+identifier = "allow-game-state"
+description = "Read a Rust engine game."
+commands.allow = ["game_state"]
+
+[[permission]]
+identifier = "allow-delete-game"
+description = "Drop a Rust engine game."
+commands.allow = ["delete_game"]
+
+[[permission]]
+identifier = "allow-legal-moves"
+description = "List legal moves from the Rust engine."
+commands.allow = ["legal_moves"]
+
+[[permission]]
+identifier = "allow-make-move"
+description = "Play a move in the Rust engine."
+commands.allow = ["make_move"]
+
+[[permission]]
+identifier = "allow-undo"
+description = "Take back a move in the Rust engine."
+commands.allow = ["undo"]
+
+[[permission]]
+identifier = "allow-ai-move"
+description = "Ask the Rust engine to play."
+commands.allow = ["ai_move"]
+
+[[permission]]
+identifier = "allow-ai-hint"
+description = "Ask the Rust engine for a hint."
+commands.allow = ["ai_hint"]
+
+[[permission]]
+identifier = "allow-load-fen"
+description = "Load a position into the Rust engine."
+commands.allow = ["load_fen"]
+
+[[permission]]
+identifier = "allow-get-pgn"
+description = "Read the PGN of a Rust engine game."
+commands.allow = ["get_pgn"]
+
+[[permission]]
+identifier = "allow-get-analysis"
+description = "Ask the Rust engine for an evaluation."
+commands.allow = ["get_analysis"]

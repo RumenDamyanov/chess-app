@@ -19,7 +19,7 @@ describe('BACKEND_PRESETS', () => {
   });
 
   it('should have default URLs for remote backends', () => {
-    expect(BACKEND_PRESETS.rust.url).toBe('http://localhost:8082');
+    expect(BACKEND_PRESETS.rust.url).toBeUndefined();
     expect(BACKEND_PRESETS.go.url).toBe('http://localhost:8083');
   });
 

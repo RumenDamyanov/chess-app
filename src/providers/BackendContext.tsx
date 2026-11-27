@@ -19,6 +19,7 @@ import {
 import { loadJSON, saveJSON } from '../utils/persist';
 import { LocalProvider } from './LocalProvider';
 import { RemoteProvider } from './RemoteProvider';
+import { TauriProvider } from './TauriProvider';
 import type { BackendId, BackendConfig, ChessProvider, ProviderCapabilities } from './types';
 import { BACKEND_PRESETS, DESKTOP_BACKENDS } from './types';
 
@@ -69,7 +70,11 @@ function envBackend(): BackendId {
   if (typeof val === 'string' && (DESKTOP_BACKENDS as string[]).includes(val)) {
     return val as BackendId;
   }
-  return 'local';
+  return 'rust';
+}
+
+function isInProcess(id: BackendId): boolean {
+  return id === 'local' || id === 'js' || id === 'rust';
 }
 
 function envUrls(): Partial<Record<BackendId, string>> {
@@ -108,7 +113,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
   // Persisted backend choice (falls back to env var, then 'local')
   const [backendId, setBackendId] = useState<BackendId>(() => {
     const saved = loadJSON<BackendId>(STORAGE_KEY_BACKEND, envBackend());
-    return (DESKTOP_BACKENDS as string[]).includes(saved) ? saved : 'local';
+    return (DESKTOP_BACKENDS as string[]).includes(saved) ? saved : 'rust';
   });
 
   // Persisted URL overrides per backend (seeded from env vars)
@@ -120,10 +125,10 @@ export function BackendProvider({ children }: { children: ReactNode }) {
 
   // Connection state
   const [connected, setConnected] = useState<boolean | null>(
-    backendId === 'local' || backendId === 'js' ? true : null
+    isInProcess(backendId) ? true : null
   );
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [checking, setChecking] = useState<boolean>(backendId !== 'local' && backendId !== 'js');
+  const [checking, setChecking] = useState<boolean>(!isInProcess(backendId));
 
   // Build configs with URL overrides
   const backends = useMemo<Record<BackendId, BackendConfig>>(() => {
@@ -138,6 +143,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
 
   // Build provider (recreated when backend or URL changes)
   const provider = useMemo<ChessProvider>(() => {
+    if (backendId === 'rust') return new TauriProvider();
     if (backendId === 'local' || backendId === 'js') return new LocalProvider();
     const cfg = backends[backendId];
     const url = cfg.url ?? BACKEND_PRESETS[backendId].url ?? 'http://localhost:8083';
@@ -146,7 +152,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
 
   // Health check for remote backends — called from event handlers (onClick), not effects
   const checkConnection = useCallback(async () => {
-    if (backendId === 'local' || backendId === 'js') {
+    if (isInProcess(backendId)) {
       setConnected(true);
       setConnectionError(null);
       return;
@@ -162,7 +168,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
 
   // Auto-check when backend changes — setState only in .then() callback, never synchronously
   useEffect(() => {
-    if (backendId === 'local' || backendId === 'js') return;
+    if (isInProcess(backendId)) return;
 
     let ignore = false;
     const cfg = backends[backendId];
@@ -195,9 +201,9 @@ export function BackendProvider({ children }: { children: ReactNode }) {
     if (customUrl && id !== 'local') {
       setUrlOverrides((prev) => ({ ...prev, [id]: customUrl }));
     }
-    setConnected(id === 'local' ? true : null);
+    setConnected(isInProcess(id) ? true : null);
     setConnectionError(null);
-    setChecking(id !== 'local' && id !== 'js');
+    setChecking(!isInProcess(id));
     setBackendId(id);
   }, []);
 

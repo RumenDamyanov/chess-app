@@ -14,6 +14,7 @@ function App() {
   // Backend context
   const {
     backendId,
+    provider,
     switchBackend,
     backends,
     connected,
@@ -98,6 +99,8 @@ function App() {
     engine,
     pendingPromotion,
     makeMove,
+    applyLocalMove,
+    remoteGameId,
     goToPly,
     currentPly,
     whiteTimeMs,
@@ -174,6 +177,13 @@ function App() {
       const baseDelay = history.length === 0 && playerColor === 'black' ? 50 : 150;
       await new Promise((r) => setTimeout(r, baseDelay));
       if (cancelled) return;
+      if (backendId === 'rust' && remoteGameId) {
+        const result = await provider.aiMove(remoteGameId, aiDifficulty);
+        if (cancelled) return;
+        applyLocalMove(result.move.from, result.move.to, result.move.promotion);
+        if (!cancelled) setAiThinking(false);
+        return;
+      }
       const move = ChessAI.computeBestMove(engine, aiDifficulty);
       if (move) {
         makeMove(move.from, move.to);
@@ -195,8 +205,12 @@ function App() {
     playerColor,
     engine,
     makeMove,
+    applyLocalMove,
     aiDifficulty,
     history.length,
+    backendId,
+    provider,
+    remoteGameId,
   ]);
 
   const handlePlayerColorChange = (color: Color) => {
@@ -229,6 +243,12 @@ function App() {
     // Only show hints when it's the player's turn (not AI's turn)
     const isPlayersTurn = !aiEnabled || turn === playerColor;
     if (!isPlayersTurn || isGameOver || aiThinking) return;
+    if (backendId === 'rust' && remoteGameId) {
+      void provider.aiHint(remoteGameId, 'easy').then((move) => {
+        setHintMove({ from: move.from, to: move.to });
+      });
+      return;
+    }
     const move = ChessAI.computeBestMove(engine, 'easy');
     if (move) setHintMove({ from: move.from, to: move.to });
   };
@@ -319,7 +339,7 @@ function App() {
                 ))}
               </select>
             </div>
-            {backendId !== 'local' && backendId !== 'js' && (
+            {backendId === 'go' && (
               <>
                 <div className="board-settings__option">
                   <label className="board-settings__label" htmlFor="backend-url">

@@ -63,6 +63,7 @@ export interface BackendGameHook {
   engine: ChessEngine;
 
   // Remote-only extras
+  applyLocalMove: (from: string, to: string, promotion?: string) => ChessMove | null;
   remoteGameId: string | null;
   loading: boolean;
   error: string | null;
@@ -170,6 +171,29 @@ export function useChessBackendGame(initialFEN?: string): BackendGameHook {
   // -----------------------------------------------------------------------
   // makeMove
   // -----------------------------------------------------------------------
+
+  const applyLocalMove = useCallback(
+    (from: string, to: string, promotion?: string): ChessMove | null => {
+      const move = engine.makeMove(from, to, promotion);
+      if (!move) return null;
+
+      if (timeControl.initialMs !== null && !timeoutWinner) {
+        if (move.piece.color === 'white') {
+          setWhiteTimeMs((t) => t + timeControl.incrementMs);
+        } else {
+          setBlackTimeMs((t) => t + timeControl.incrementMs);
+        }
+      }
+
+      updateGameState();
+      setSelectedSquare(null);
+      setLegalMoves([]);
+      setPendingPromotion(null);
+      setCurrentPly(engine.getHistory().length);
+      return move;
+    },
+    [engine, timeControl.initialMs, timeControl.incrementMs, timeoutWinner, updateGameState]
+  );
 
   const makeMove = useCallback(
     (from: string, to: string, promotion?: string): ChessMove | null => {
@@ -455,6 +479,7 @@ export function useChessBackendGame(initialFEN?: string): BackendGameHook {
     currentPly,
     pendingPromotion,
     makeMove,
+    applyLocalMove,
     undoMove,
     selectSquare,
     resetGame,

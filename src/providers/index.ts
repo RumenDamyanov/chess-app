@@ -21,4 +21,5 @@ export type {
 export { BACKEND_PRESETS, DESKTOP_BACKENDS } from './types';
 export { LocalProvider } from './LocalProvider';
 export { RemoteProvider } from './RemoteProvider';
+export { TauriProvider } from './TauriProvider';
 export { BackendProvider, useBackend } from './BackendContext';

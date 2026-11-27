@@ -10,16 +10,16 @@ The person playing opens chess-app. They do not open a browser tab. The window i
 |---|---|
 | [react-chess](https://github.com/RumenDamyanov/react-chess) | UI source. It stays a browser demo. |
 | [@rumenx/chess](https://www.npmjs.com/package/@rumenx/chess) 1.1.1 and [npm-chess](https://github.com/RumenDamyanov/npm-chess) | JavaScript engine used in the window. The Express server in npm-chess is not a dependency. |
-| [rust-chess](https://github.com/RumenDamyanov/rust-chess) | `rumenx-chess` crate. The desktop process will call `engine` and `ai` in-process. |
+| [rust-chess](https://github.com/RumenDamyanov/rust-chess) | `rumenx-chess` 0.2, linked into the desktop process. The window calls it directly. |
 | [go-chess](https://github.com/RumenDamyanov/go-chess) | Go engine. Not linked into this version. |
 
 ## Status
 
-The window opens a board and plays with the JavaScript engine, `@rumenx/chess` 1.1.1. The Rust engine is not wired in yet.
+The window opens a board. The default engine is `rumenx-chess` inside the app. The JavaScript engine is `@rumenx/chess` 1.1.1, also inside the window. Neither engine uses a local HTTP server.
 
 ## Develop
 
-You need Node.js 22.23.4+, 24.22.1+, or 26.12.1+, Rust, and the system libraries [Tauri documents for your platform](https://v2.tauri.app/start/prerequisites/). A person installing a finished build does not install Node or Rust.
+You need Node.js 22.23.4+, 24.22.1+, or 26.12.1+, Rust 1.90 or newer, and the system libraries [Tauri documents for your platform](https://v2.tauri.app/start/prerequisites/). A person installing a finished build does not install Node or Rust.
 
 ```bash
 npm install

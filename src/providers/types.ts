@@ -28,7 +28,7 @@ export interface BackendConfig {
 }
 
 /** Engines offered in the desktop window. HTTP servers stay out of this app. */
-export const DESKTOP_BACKENDS: BackendId[] = ['local'];
+export const DESKTOP_BACKENDS: BackendId[] = ['rust', 'local'];
 
 /** All backends with their defaults */
 export const BACKEND_PRESETS: Record<BackendId, BackendConfig> = {
@@ -39,9 +39,8 @@ export const BACKEND_PRESETS: Record<BackendId, BackendConfig> = {
   },
   rust: {
     id: 'rust',
-    label: 'Rust Engine',
-    url: 'http://localhost:8082',
-    description: 'rust-chess (rumenx-chess) Axum REST API',
+    label: 'Rust',
+    description: 'rumenx-chess running inside the app',
   },
   go: {
     id: 'go',
