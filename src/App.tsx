@@ -177,19 +177,21 @@ function App() {
       const baseDelay = history.length === 0 && playerColor === 'black' ? 50 : 150;
       await new Promise((r) => setTimeout(r, baseDelay));
       if (cancelled) return;
-      if (backendId === 'rust' && remoteGameId) {
-        const result = await provider.aiMove(remoteGameId, aiDifficulty);
-        if (cancelled) return;
-        applyLocalMove(result.move.from, result.move.to, result.move.promotion);
+      try {
+        if (backendId === 'rust' && remoteGameId) {
+          const result = await provider.aiMove(remoteGameId, aiDifficulty);
+          if (cancelled) return;
+          if (!engine.isGameOver()) {
+            applyLocalMove(result.move.from, result.move.to, result.move.promotion);
+          }
+          return;
+        }
+        const move = ChessAI.computeBestMove(engine, aiDifficulty);
+        if (move && !cancelled && !engine.isGameOver()) {
+          makeMove(move.from, move.to);
+        }
+      } finally {
         if (!cancelled) setAiThinking(false);
-        return;
-      }
-      const move = ChessAI.computeBestMove(engine, aiDifficulty);
-      if (move) {
-        makeMove(move.from, move.to);
-        if (!cancelled) setAiThinking(false);
-      } else {
-        setAiThinking(false);
       }
     };
     think();

@@ -7,6 +7,7 @@ use tauri::State;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    games::warm_engine();
     tauri::Builder::default()
         .manage(Mutex::new(Games::new()))
         .invoke_handler(tauri::generate_handler![
@@ -131,11 +132,16 @@ async fn get_analysis(
 ) -> Result<NormAnalysis, String> {
     let snapshot = lock(&games)?.clone_game(&game_id)?;
     let depth = depth.unwrap_or(2).clamp(1, 5);
+    let label = match depth {
+        1 => "easy",
+        3 => "hard",
+        4 => "expert",
+        5 => "godlike",
+        _ => "medium",
+    };
     let (mv, score, searched) = tauri::async_runtime::spawn_blocking(move || {
-        let mut position = snapshot.position().clone();
-        let (mv, stats) = rumenx_chess::ai::MinimaxAi::new().search(&mut position, depth);
-        let mv = mv.ok_or_else(|| "the rust engine found no move".to_string())?;
-        Ok::<_, String>((mv, stats.score, stats.depth))
+        let (mv, score, searched, _) = games::choose_move(&snapshot, label)?;
+        Ok::<_, String>((mv, score, searched))
     })
     .await
     .map_err(|err| err.to_string())??;

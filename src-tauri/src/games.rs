@@ -2,10 +2,10 @@
 
 use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
-use rumenx_chess::ai::{MinimaxAi, RandomAi};
 use rumenx_chess::ai::engine::AiEngine;
+use rumenx_chess::ai::{MinimaxAi, RandomAi};
 use rumenx_chess::engine::pgn::to_pgn;
 use rumenx_chess::engine::{Color, Game, GameStatus, Move, PieceType, Square};
 use serde::Serialize;
@@ -172,7 +172,19 @@ impl Games {
     }
 }
 
+/// Build the attack tables before the first move. The first call is slow in a
+/// debug build; later moves reuse the tables.
+pub fn warm_engine() {
+    std::thread::spawn(|| {
+        let _ = rumenx_chess::engine::attacks::tables();
+        let _ = rumenx_chess::engine::zobrist::keys();
+    });
+}
+
 pub fn choose_move(game: &Game, difficulty: &str) -> Result<(Move, i32, u32, u128), String> {
+    if game.is_game_over() || game.legal_moves().is_empty() {
+        return Err("the game is already over".to_string());
+    }
     let depth = search_depth(difficulty);
     let started = Instant::now();
     if depth == 0 {
@@ -184,7 +196,12 @@ pub fn choose_move(game: &Game, difficulty: &str) -> Result<(Move, i32, u32, u12
     let mut position = game.position().clone();
     let (mv, stats) = MinimaxAi::new().search(&mut position, depth);
     let mv = mv.ok_or_else(|| "the rust engine found no move".to_string())?;
-    Ok((mv, stats.score, stats.depth, started.elapsed().as_millis()))
+    Ok((
+        mv,
+        stats.score,
+        stats.depth,
+        started.elapsed().as_millis(),
+    ))
 }
 
 pub fn search_depth(difficulty: &str) -> u32 {
@@ -386,6 +403,25 @@ mod tests {
         let state = games.undo(&id).unwrap();
         assert_eq!(state.move_count, 1);
         assert_eq!(state.turn, "black");
+    }
+
+    #[test]
+    fn finished_position_is_not_searched() {
+        let fen = "3Q4/rpk2p1B/5B1p/4NP2/p3N3/8/PPP2PP1/R2Q1RK1 b - - 0 25";
+        let game = Game::from_fen(fen).unwrap();
+        assert!(game.is_game_over());
+        assert_eq!(game.legal_moves().len(), 0);
+        assert!(choose_move(&game, "godlike").is_err());
+    }
+
+    #[test]
+    fn opening_search_stays_inside_the_time_budget() {
+        rumenx_chess::engine::attacks::tables();
+        let game = Game::new();
+        let started = std::time::Instant::now();
+        let (mv, _, _, _) = choose_move(&game, "godlike").unwrap();
+        assert!(started.elapsed() < Duration::from_secs(2));
+        assert!(game.legal_moves().contains(&mv));
     }
 
     #[test]
