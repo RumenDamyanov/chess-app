@@ -14,10 +14,10 @@
       {
         "label": "main",
         "title": "chess-app by RumenX",
-        "width": 960,
-        "height": 720,
-        "minWidth": 800,
-        "minHeight": 600
+        "width": 1320,
+        "height": 860,
+        "minWidth": 1180,
+        "minHeight": 760
       }
     ],
     "security": {
