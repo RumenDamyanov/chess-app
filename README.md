@@ -73,8 +73,6 @@ Replace `vX.Y.Z` with the tag you downloaded. `sha256sum -c` checks each file na
 
 Before tagging, set the same version in `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`.
 
-The release workflow is added with the first tag. Until then this section describes the intended check.
-
 ## License
 
 MIT. Copyright 2026 Rumen Damyanov. See [LICENSE.md](LICENSE.md).
