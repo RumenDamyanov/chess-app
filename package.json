@@ -12,19 +12,32 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "test": "jest --ci --watchAll=false && cargo test --manifest-path src-tauri/Cargo.toml",
+    "test:ui": "jest --ci --watchAll=false",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml",
     "tauri": "tauri"
   },
   "dependencies": {
+    "@rumenx/chess": "^1.1.1",
     "@tauri-apps/api": "~2.11.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "~2.11.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.6.11",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
+    "sass": "^1.108.2",
+    "ts-jest": "^29.4.15",
     "typescript": "~5.9.3",
     "vite": "^8.0.0"
   }

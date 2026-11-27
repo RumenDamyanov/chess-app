@@ -9,13 +9,13 @@ The person playing opens chess-app. They do not open a browser tab. The window i
 | Project | Role |
 |---|---|
 | [react-chess](https://github.com/RumenDamyanov/react-chess) | UI source. It stays a browser demo. |
-| [@rumenx/chess](https://www.npmjs.com/package/@rumenx/chess) and [npm-chess](https://github.com/RumenDamyanov/npm-chess) | JavaScript engine. The desktop window will call the library. The Express server in npm-chess is not a dependency. |
+| [@rumenx/chess](https://www.npmjs.com/package/@rumenx/chess) 1.1.1 and [npm-chess](https://github.com/RumenDamyanov/npm-chess) | JavaScript engine used in the window. The Express server in npm-chess is not a dependency. |
 | [rust-chess](https://github.com/RumenDamyanov/rust-chess) | `rumenx-chess` crate. The desktop process will call `engine` and `ai` in-process. |
 | [go-chess](https://github.com/RumenDamyanov/go-chess) | Go engine. Not linked into this version. |
 
 ## Status
 
-The window opens and shows the product name. The board and the engines are not wired in yet.
+The window opens a board and plays with the JavaScript engine, `@rumenx/chess` 1.1.1. The Rust engine is not wired in yet.
 
 ## Develop
 
