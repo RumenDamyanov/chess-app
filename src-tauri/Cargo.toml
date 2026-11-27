@@ -15,6 +15,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
+# Linux builds pull gtk 0.18, which requires glib ^0.18. RUSTSEC-2024-0429
+# is fixed in glib 0.20, and gtk 0.18 cannot take that release. Tauri 2.12
+# still depends on gtk 0.18. See SECURITY.md.
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
