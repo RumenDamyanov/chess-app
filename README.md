@@ -68,6 +68,8 @@ The wiki is the player guide. The pages exist locally and will be published to G
 
 MIT. Copyright 2026 Rumen Damyanov. See [LICENSE.md](LICENSE.md).
 
+The piece images are the Cburnett set by Colin M.L. Burnett, used under CC BY-SA 3.0 or GPL-2.0-or-later. See `public/assets/pieces/LICENSE`.
+
 ---
 
 ## Development
