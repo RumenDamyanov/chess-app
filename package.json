@@ -2,7 +2,7 @@
   "name": "chess-app",
   "private": true,
   "version": "0.0.1",
-  "description": "A desktop window for the chess engines already built.",
+  "description": "Desktop chess with a Rust engine and a JavaScript engine.",
   "license": "MIT",
   "type": "module",
   "engines": {

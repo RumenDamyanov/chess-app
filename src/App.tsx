@@ -746,9 +746,12 @@ function App() {
 
       <footer className="app__footer">
         <p>
-          Made with ♟️ by{' '}
-          <a href="https://github.com/RumenDamyanov" target="_blank" rel="noopener noreferrer">
-            Rumen Damyanov
+          <a
+            href="https://github.com/RumenDamyanov/chess-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Source
           </a>
         </p>
       </footer>

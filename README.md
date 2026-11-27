@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
-A desktop chess board for the engines already built at RumenX. Sit down at a window, choose Rust or JavaScript, and play a full game offline: legal moves, clocks, an AI opponent, and the quiet of a program that stays on your machine.
+chess-app is a desktop chess program for macOS, Windows, and Linux. Play in the window with legal moves, clocks, a move list, and an opponent. The Rust engine is the default. A JavaScript engine is included as well. Both run inside the app.
 
 The first installer release is not published yet. Until `v0.0.1-beta.1` is tagged, the way to open the board is a local build. The wiki pages below are the guides that release will use.
 
